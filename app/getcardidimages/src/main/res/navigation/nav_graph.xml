@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/idFragment">
+
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="com.bankofjordan.getcardidimages.PhotoFragment"
+        android:label="PhotoFragment" >
+        <action
+            android:id="@+id/action_photoFragment_to_idFragment"
+            app:destination="@id/idFragment" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/idFragment"
+        android:name="com.bankofjordan.getcardidimages.IdFragment"
+        android:label="fragment_id"
+        tools:layout="@layout/fragment_id" >
+        <action
+            android:id="@+id/action_idFragment_to_photoFragment"
+            app:destination="@id/photoFragment" />
+    </fragment>
+
+</navigation>
