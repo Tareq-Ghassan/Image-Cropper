@@ -19,9 +19,8 @@ class MainActivityLib : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_lib)
-        Navigation.findNavController(this,R.id.nav_host_fragment)
-//
 
+        Navigation.findNavController(this,R.id.nav_host_fragment)
 
         viewModel = run {
             ViewModelProvider(this)[IdViewModel::class.java]

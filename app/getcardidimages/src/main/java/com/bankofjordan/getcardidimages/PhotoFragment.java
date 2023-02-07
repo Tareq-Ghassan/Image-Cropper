@@ -82,7 +82,6 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_photo, container, false);
-//        ButterKnife.bind(this, view);
         binding = FragmentPhotoBinding.bind(view);
         context = getContext();
 
@@ -121,10 +120,6 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
         if (camera != null) {
             try {
                 Camera.Parameters parameters = camera.getParameters();
-
-                //get preview sizes
-                List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
-
 
                 if (camera.getParameters().getFocusMode().contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
