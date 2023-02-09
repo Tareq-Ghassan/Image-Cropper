@@ -38,10 +38,10 @@ public class MainActivityLib extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!Objects.requireNonNull(viewModel.getFrontFile().getValue()).isBlank() || !viewModel.getFrontFile().getValue().isEmpty()) {
+        if (!Objects.requireNonNull(viewModel.getFrontFile().getValue()).isBlank() || !Objects.requireNonNull(viewModel.getFrontFile().getValue()).isEmpty()) {
             new File(viewModel.getFrontFile().getValue()).delete();
         }
-        if (!viewModel.getFrontFile().getValue().isBlank() || !viewModel.getFrontFile().getValue().isEmpty()) {
+        if (!Objects.requireNonNull(viewModel.getFrontFile().getValue()).isBlank() || !Objects.requireNonNull(viewModel.getFrontFile().getValue()).isEmpty()) {
             new File(viewModel.getFrontFile().getValue()).delete();
         }
     }
