@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import com.bankofjordan.getcardidimages.MainActivityLib;
 
+import java.util.function.Function;
+
 public class MainActivity extends AppCompatActivity {
 
     Button button;

@@ -52,9 +52,9 @@ class IdFragment : Fragment() {
         })
 
 
-        /*take front || back photo*/
+        /*take front ID photo*/
         binding.frontImageButton.setOnClickListener {
-            /*Delete picture */
+            /*Delete picture if there is already one*/
             if (!viewModel.FrontFile.value.isNullOrEmpty()) {
                 File(viewModel.FrontFile.value!!).delete()
                 viewModel.FrontFile.value = ""
@@ -63,8 +63,9 @@ class IdFragment : Fragment() {
             Navigation.findNavController(view)
                 .navigate(R.id.action_idFragment_to_photoFragment)
         }
+        /*take back ID photo*/
         binding.backImageButton.setOnClickListener {
-            /*Delete picture */
+            /*Delete picture if there is already one*/
             if (!viewModel.BackFile.value.isNullOrEmpty()) {
                 File(viewModel.BackFile.value!!).delete()
                 viewModel.BackFile.value = ""
@@ -74,14 +75,14 @@ class IdFragment : Fragment() {
                 .navigate(R.id.action_idFragment_to_photoFragment)
         }
 
-        /*show photo*/
+        /*show FRONT photo*/
         if (!viewModel.FrontFile.value.isNullOrEmpty()) {
             val bitmap = BitmapFactory.decodeFile(viewModel.FrontFile.value)
             binding.frontImageButton.setImageBitmap(bitmap)
             binding.frontImageButton.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
 
         }
-
+        /*show BACK photo*/
         if (!viewModel.BackFile.value.isNullOrEmpty()) {
             val bitmap = BitmapFactory.decodeFile(viewModel.BackFile.value)
             binding.backImageButton.setImageBitmap(bitmap)

@@ -1,14 +1,17 @@
 package com.bankofjordan.getcardidimages
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import java.io.File
+import java.util.function.Function
 
 class MainActivityLib : AppCompatActivity() {
     private val CAMERA_REQ = 101

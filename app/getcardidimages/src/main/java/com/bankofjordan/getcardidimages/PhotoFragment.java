@@ -51,21 +51,7 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
     Context context;
     private FragmentPhotoBinding binding;
 
-    private OnFragmentInteractionListener mListener;
-
     Camera.Size previewSizeOptimal;
-
-    public void makePhoto() {
-        if (camera != null) {
-            camera.takePicture(myShutterCallback,
-                    myPictureCallback_RAW, myPictureCallback_JPG);
-        }
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Bitmap bitmap);
-    }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +89,13 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
         });
     }
 
+    /*take Picture function*/
+    public void makePhoto() {
+        if (camera != null) {
+            camera.takePicture(myShutterCallback,
+                    myPictureCallback_RAW, myPictureCallback_JPG);
+        }
+    }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -117,6 +110,7 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
             previewing = false;
         }
 
+        //set and get camera praameters
         if (camera != null) {
             try {
                 Camera.Parameters parameters = camera.getParameters();
@@ -173,7 +167,7 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
         }
     };
 
-
+    /*create picture bitmap*/
     Camera.PictureCallback myPictureCallback_JPG = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
@@ -202,16 +196,13 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
                 int x2 = binding.borderCamera.getWidth() - (binding.borderCamera.getLeft() * 2);
                 int y2 = binding.borderCamera.getHeight();
 
-                Log.d("hero", "x1: " + x1 + " y1: " + y1);
-                Log.d("hero", "x2: " + x2 + " y2: " + y2);
                 //calculate position and size for cropping
                 int cropStartX = Math.round(x1 * koefX);
                 int cropStartY = Math.round(y1 * koefY);
 
                 int cropWidthX = Math.round(x2 * koefX);
                 int cropHeightY = Math.round(y2 * koefY);
-                Log.d("hero", "cropStartX: " + cropStartX + " cropStartY: " + cropStartY);
-                Log.d("hero", "cropStartX: " + cropWidthX + " cropStartY: " + cropHeightY);
+
 
                 if (cropStartX + cropWidthX <= rotatedBitmap.getWidth() && cropStartY + cropHeightY <= rotatedBitmap.getHeight()) {
                     croppedBitmap = Bitmap.createBitmap(rotatedBitmap, cropStartX, cropStartY, cropWidthX, cropHeightY);
@@ -229,11 +220,6 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
                 // for Landscape mode
             }
 
-            //pass to another fragment
-            if (mListener != null) {
-                if (croppedBitmap != null)
-                    mListener.onFragmentInteraction(croppedBitmap);
-            }
 
             if (camera != null) {
                 camera.startPreview();
@@ -241,7 +227,7 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
         }
     };
 
-
+    /*save picture as file*/
     public void createImageFile(final Bitmap bitmap) {
         File path;
         if (Environment.isExternalStorageEmulated() && Environment.isExternalStorageRemovable()) {
@@ -282,8 +268,8 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
                         }
                     });
 
-
             Toast.makeText(context, file.getName(), Toast.LENGTH_SHORT).show();
+
             int numButton = viewModel.getNumButton().getValue();
 
             if (numButton == 2) {
