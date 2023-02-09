@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -37,7 +38,7 @@ public class MainActivityLib extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!viewModel.getFrontFile().getValue().isBlank() || !viewModel.getFrontFile().getValue().isEmpty()) {
+        if (!Objects.requireNonNull(viewModel.getFrontFile().getValue()).isBlank() || !viewModel.getFrontFile().getValue().isEmpty()) {
             new File(viewModel.getFrontFile().getValue()).delete();
         }
         if (!viewModel.getFrontFile().getValue().isBlank() || !viewModel.getFrontFile().getValue().isEmpty()) {
@@ -45,12 +46,10 @@ public class MainActivityLib extends AppCompatActivity {
         }
     }
 
-    public void initGetCard(Function callBack) {
+    public void initGetCard(Context context,Function callBack) {
         mCallback = callBack;
-        Intent intent = new Intent(getApplicationContext(), getClass());
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        startActivity(intent);
+        Intent myIntent = new Intent(context, MainActivityLib.class);
+        context.startActivity(myIntent);
     }
 
     //********************************Check Permission*****************************//

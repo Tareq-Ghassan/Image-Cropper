@@ -23,13 +23,12 @@ public class MainActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(v -> {
             MainActivityLib mm = new MainActivityLib();
-            mm.initGetCard(test());
+            mm.initGetCard(this,test());
         });
     }
 
     public Function test() {
         Toast.makeText(this, "Hello from main", Toast.LENGTH_SHORT).show();
-
         return null;
     }
 
