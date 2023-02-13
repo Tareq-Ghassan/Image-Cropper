@@ -7,16 +7,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.Objects;
-import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 public class MainActivityLib extends AppCompatActivity {
@@ -24,7 +21,6 @@ public class MainActivityLib extends AppCompatActivity {
     private final int WRITE_REQ = 102;
     private final int READ_REQ = 103;
     private IdViewModel viewModel;
-    Function mCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +42,13 @@ public class MainActivityLib extends AppCompatActivity {
         }
     }
 
-    public void initGetCard(Context context,Function callBack) {
-        mCallback = callBack;
+    public void initGetCard(Context context, final Runnable func){
+        func.run();
         Intent myIntent = new Intent(context, MainActivityLib.class);
         context.startActivity(myIntent);
+
     }
+
 
     //********************************Check Permission*****************************//
     private final void permissions() {
