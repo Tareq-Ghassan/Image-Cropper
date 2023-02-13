@@ -13,14 +13,13 @@ import android.os.Build;
 import android.os.Bundle;
 
 import java.io.File;
-import java.util.Objects;
-import java.util.function.Function;
 
 public class MainActivityLib extends AppCompatActivity {
     private final int CAMERA_REQ = 101;
     private final int WRITE_REQ = 102;
     private final int READ_REQ = 103;
     private IdViewModel viewModel;
+    Runnable callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +33,21 @@ public class MainActivityLib extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!Objects.requireNonNull(viewModel.getFrontFile().getValue()).isBlank() || !Objects.requireNonNull(viewModel.getFrontFile().getValue()).isEmpty()) {
-            new File(viewModel.getFrontFile().getValue()).delete();
+        String front = viewModel.getFrontFile().getValue();
+        String back = viewModel.getBackFile().getValue();
+        front = (front == null) ? "" : front;
+        back = (back == null) ? "" : back;
+        if (front.length() > 0) {
+            new File(front).delete();
         }
-        if (!Objects.requireNonNull(viewModel.getFrontFile().getValue()).isBlank() || !Objects.requireNonNull(viewModel.getFrontFile().getValue()).isEmpty()) {
-            new File(viewModel.getFrontFile().getValue()).delete();
+        if (back.length() > 0) {
+            new File(back).delete();
         }
     }
 
-    public void initGetCard(Context context, final Runnable func){
-        func.run();
+    public void initGetCard(Context context, final Runnable func) {
+        callback = func;
+        callback.run();
         Intent myIntent = new Intent(context, MainActivityLib.class);
         context.startActivity(myIntent);
 
