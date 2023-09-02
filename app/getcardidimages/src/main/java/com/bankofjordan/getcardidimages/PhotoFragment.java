@@ -41,6 +41,7 @@ import java.util.List;
 
 
 public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
+    //this class is to handle crop image and save image in your local storage
     Camera camera;
 
     private IdViewModel viewModel;
@@ -56,6 +57,7 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //hide app and status bar
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         View decorView = ((AppCompatActivity) getActivity()).getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -283,7 +285,7 @@ public class PhotoFragment extends Fragment implements SurfaceHolder.Callback {
             // Unable to create file, likely because external storage is
             // not currently mounted.
             Log.w("ExternalStorage", "Error writing " + file, e);
-            Toast.makeText(context, "Faild! Try Again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Failed! Try Again", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(getView()).popBackStack();
         }
     }

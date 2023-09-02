@@ -45,6 +45,7 @@ public class MainActivityLib extends AppCompatActivity {
         }
     }
 
+    // This is the function you have to call inside your app
     public void initGetCard(Context context, final Runnable func) {
         callback = func;
         callback.run();

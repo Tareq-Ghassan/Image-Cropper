@@ -23,6 +23,7 @@ class IdFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        //show back app and status bar
         val decorView = (activity as AppCompatActivity?)!!.window.decorView
         val uiOptions = View.SYSTEM_UI_FLAG_VISIBLE
         decorView.setSystemUiVisibility(uiOptions)

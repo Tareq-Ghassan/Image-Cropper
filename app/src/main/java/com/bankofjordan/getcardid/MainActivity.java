@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.bankofjordan.getcardidimages.MainActivityLib;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,7 +16,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        /*
+         * function call back
+         * you can call my lib using initGetCard()
+         * */
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(v -> {
             MainActivityLib mm = new MainActivityLib();
