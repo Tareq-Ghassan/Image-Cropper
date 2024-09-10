@@ -22,7 +22,7 @@ This project is an Android application that allows users to capture an image and
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/image-cropper-app.git
+   git clone https://github.com/Tareq-Ghassan/image-cropper-app.git
    ```
 
 2. Open the project in Android Studio:
