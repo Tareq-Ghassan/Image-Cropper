@@ -1,0 +1,11 @@
+# JitPack configuration for DocScanner SDK Android
+jdk:
+  - openjdk17
+
+before_install:
+  - echo "Installing dependencies..."
+  - ./gradlew --version
+
+install:
+  - echo "Building DocScanner SDK..."
+  - ./gradlew clean build publishToMavenLocal --stacktrace

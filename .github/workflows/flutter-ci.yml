@@ -1,0 +1,55 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.38.4'
+        channel: 'stable'
+        cache: true
+        
+    - name: Install dependencies
+      working-directory: ./flutter
+      run: flutter pub get
+      
+    - name: Analyze code
+      working-directory: ./flutter
+      run: flutter analyze
+      
+    - name: Run tests
+      working-directory: ./flutter
+      run: flutter test
+      
+    - name: Check formatting
+      working-directory: ./flutter
+      run: dart format --output=none --set-exit-if-changed .
+      
+    - name: Publish to pub.dev (dry-run)
+      if: github.event_name == 'pull_request'
+      working-directory: ./flutter
+      run: flutter pub publish --dry-run
+      
+    - name: Publish to pub.dev
+      if: github.event_name == 'release'
+      working-directory: ./flutter
+      env:
+        PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+      run: |
+        mkdir -p ~/.pub-cache
+        echo "$PUB_CREDENTIALS" > ~/.pub-cache/credentials.json
+        flutter pub publish --force

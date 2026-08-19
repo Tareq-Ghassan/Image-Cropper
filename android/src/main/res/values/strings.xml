@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DocScanner SDK</string>
+    <string name="instruction_front">Position the front of the document within the frame</string>
+    <string name="instruction_back">Position the back of the document within the frame</string>
+    <string name="instruction_single">Position the document within the frame</string>
+    <string name="capture_photo">Capture Photo</string>
+    <string name="toggle_flash">Toggle Flash</string>
     <string name="make_photo_button">Capture Photo</string>
     <string name="front_image">Front Image</string>
     <string name="back_image">Back Image</string>
-</resources>

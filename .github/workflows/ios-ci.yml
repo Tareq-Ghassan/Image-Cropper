@@ -1,0 +1,44 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Build with Swift Package Manager
+      working-directory: ./ios
+      run: swift build
+      
+    - name: Run tests
+      working-directory: ./ios
+      run: swift test
+      
+    - name: Validate Podspec
+      if: github.event_name == 'release'
+      working-directory: ./ios
+      run: |
+        pod lib lint DocScannerSDK.podspec --allow-warnings
+        
+    - name: Publish to CocoaPods
+      if: github.event_name == 'release'
+      working-directory: ./ios
+      env:
+        COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+      run: |
+        pod trunk push DocScannerSDK.podspec --allow-warnings
