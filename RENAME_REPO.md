@@ -30,7 +30,7 @@
 ### Option 2: Using GitHub CLI
 
 ```bash
-gh repo rename DocumentScanner-SDK --repo Tareq-Ghassan/DocumentScanner-SDK
+gh repo rename DocumentScanner-SDK --repo Tareq-Ghassan/Image-Cropper
 ```
 
 ---
