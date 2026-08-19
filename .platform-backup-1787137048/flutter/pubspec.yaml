@@ -1,0 +1,57 @@
+name: doc_scanner_sdk
+description: A Flutter plugin for cross-platform document scanning with a fixed crop area overlay. Perfect for ID cards, passports, and document OCR across Android, iOS, Web, Windows, macOS, and Linux.
+version: 1.0.0
+homepage: https://github.com/Tareq-Ghassan/DocumentScanner-SDK
+repository: https://github.com/Tareq-Ghassan/DocScannerSDK-Flutter
+issue_tracker: https://github.com/Tareq-Ghassan/DocumentScanner-SDK/issues
+documentation: https://github.com/Tareq-Ghassan/DocScannerSDK-Flutter/blob/main/README.md
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+  flutter: '>=3.38.4'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.docscanner.sdk
+        pluginClass: DocScannerSdkPlugin
+      ios:
+        pluginClass: DocScannerSdkPlugin
+      web:
+        pluginClass: DocScannerSdkWeb
+        fileName: doc_scanner_sdk_web.dart
+      windows:
+        pluginClass: DocScannerSdkPlugin
+      macos:
+        pluginClass: DocScannerSdkPlugin
+      linux:
+        pluginClass: DocScannerSdkPlugin
+
+topics:
+  - scanner
+  - camera
+  - document
+  - ocr
+  - cropping
+  - id-card
+  - passport
+
+screenshots:
+  - description: 'Document Scanner with Overlay'
+    path: screenshots/scanner.png
+
+funding:
+  - https://github.com/sponsors/Tareq-Ghassan

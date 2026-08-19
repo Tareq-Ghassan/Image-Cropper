@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:id="@+id/res_photo_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/frontImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:visibility="visible"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_camera"
+                tools:ignore="ImageContrastCheck"
+                android:contentDescription="@string/frontimagebutton" />
+
+            <ImageButton
+                android:id="@+id/backImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_camera"
+                android:visibility="visible"
+                tools:ignore="ImageContrastCheck"
+                android:contentDescription="@string/backimagebutton" />
+
+            <TextView
+                android:id="@+id/frontTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+            <TextView
+                android:id="@+id/backTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+</layout>
