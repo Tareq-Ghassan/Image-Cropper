@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="OverlayView">
-        <attr name="overlayBorderColor" format="color" />
-        <attr name="overlayBorderWidth" format="dimension" />
-        <attr name="overlayCornerRadius" format="dimension" />
-    </declare-styleable>
-</resources>
