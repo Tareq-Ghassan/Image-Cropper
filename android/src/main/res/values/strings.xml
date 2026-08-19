@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DocScanner SDK</string>
+    <string name="make_photo_button">Capture Photo</string>
+    <string name="front_image">Front Image</string>
+    <string name="back_image">Back Image</string>
+</resources>
