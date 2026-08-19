@@ -1,7 +1,7 @@
 # Repository Rename Guide
 
 ## Current Name
-`DocumentScanner-SDK` ❌
+`Image-Cropper` ❌
 
 ## Should Be
 `DocumentScanner-SDK` ✅
@@ -13,12 +13,12 @@
 ### Option 1: Using GitHub Web Interface (Recommended)
 
 1. **Go to repository settings:**
-   - Navigate to https://github.com/Tareq-Ghassan/DocumentScanner-SDK
+   - Navigate to https://github.com/Tareq-Ghassan/Image-Cropper
    - Click **Settings** tab
    - Scroll to **Repository name** section
 
 2. **Rename:**
-   - Change from: `DocumentScanner-SDK`
+   - Change from: `Image-Cropper`
    - Change to: `DocumentScanner-SDK`
    - Click **Rename**
 
