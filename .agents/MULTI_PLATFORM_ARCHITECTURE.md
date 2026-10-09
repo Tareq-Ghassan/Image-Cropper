@@ -46,7 +46,7 @@ DocumentScanner-SDK/                 # umbrella
 ## Android wiring in Flutter
 
 ```gradle
-api 'com.github.Tareq-Ghassan:DocScannerSDK-Android:1.0.0'
+api 'com.github.Tareq-Ghassan:DocScannerSDK-Android:1.0.1'
 ```
 
 Never copy Kotlin from `android/docscanner-sdk` into `flutter/android`.

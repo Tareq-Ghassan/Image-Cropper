@@ -109,7 +109,7 @@ Full docs: [flutter/README.md](flutter/README.md)
 ### Native Android
 
 ```kotlin
-implementation 'com.github.Tareq-Ghassan:DocScannerSDK-Android:1.0.0'
+implementation 'com.github.Tareq-Ghassan:DocScannerSDK-Android:1.0.1'
 ```
 
 ```kotlin
