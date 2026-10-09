@@ -1,0 +1,666 @@
+# Publishing Guide for DocScanner SDK
+
+**Independent releases:** tag the SDK repo you changed. Do not tag every platform together. Short version: [`.agents/RELEASE.md`](.agents/RELEASE.md).
+
+This guide walks you through publishing the DocScanner SDK to all supported platforms: pub.dev (Flutter), CocoaPods/SPM (iOS), and JitPack/Maven (Android).
+
+---
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Publishing to pub.dev (Flutter)](#publishing-to-pubdev-flutter)
+3. [Publishing to iOS Platforms](#publishing-to-ios-platforms)
+4. [Publishing to Android Platforms](#publishing-to-android-platforms)
+5. [Version Management](#version-management)
+6. [Troubleshooting](#troubleshooting)
+
+---
+
+## Prerequisites
+
+### Required Accounts
+
+- **pub.dev**: Google account with verified publisher
+- **CocoaPods**: CocoaPods Trunk account
+- **JitPack**: GitHub account (JitPack uses GitHub releases)
+- **Maven Central** (optional): Sonatype account
+
+### Required Tools
+
+```bash
+# Flutter/Dart
+flutter --version  # Should be 3.38.4+
+dart --version     # Should be 3.5+
+
+# iOS
+pod --version      # CocoaPods 1.11+
+swift --version    # Swift 6.0+
+
+# Android
+./gradlew --version  # Gradle 8.0+
+```
+
+### Repository Preparation
+
+Ensure all tests pass and code is clean:
+
+```bash
+# Flutter tests
+cd flutter
+flutter test
+flutter analyze
+dart format --set-exit-if-changed .
+
+# iOS tests
+cd ../ios
+swift test
+
+# Android tests
+cd ../android
+./gradlew test
+```
+
+---
+
+## Publishing to pub.dev (Flutter)
+
+### Step 1: Verify Package Quality
+
+Run pub.dev analysis to check your package score:
+
+```bash
+cd flutter
+flutter pub publish --dry-run
+```
+
+This shows:
+- Package score breakdown
+- Missing documentation
+- Platform support issues
+- Any blocking errors
+
+**Target Score**: Aim for 130+ points for good visibility.
+
+### Step 2: Update Version
+
+Update version in `flutter/pubspec.yaml`:
+
+```yaml
+version: 2.0.0  # Increment according to semver
+```
+
+Also update `flutter/CHANGELOG.md`:
+
+```markdown
+## 2.0.0
+
+* Initial stable release
+* Real-time document scanning at 30 FPS
+* Multi-point calibration support
+* iOS and Android platform support
+```
+
+### Step 3: Verify Publisher
+
+First-time only - verify your publisher:
+
+```bash
+# Login to pub.dev
+dart pub login
+
+# Create a verified publisher (if needed)
+# Go to: https://pub.dev/create-publisher
+```
+
+Add publisher to `pubspec.yaml`:
+
+```yaml
+publish_to: 'https://pub.dev'
+# publisher: your-domain.com  # Optional verified publisher
+```
+
+### Step 4: Publish
+
+Preferred path: tag `vX.Y.Z` on [DocScannerSDK-Flutter](https://github.com/Tareq-Ghassan/DocScannerSDK-Flutter). GitHub Actions publishes to pub.dev **and** creates the GitHub Release (sidebar **Latest**). A git tag alone does not update the sidebar. See [`.agents/RELEASE.md`](.agents/RELEASE.md).
+
+Manual publish (local only):
+
+```bash
+# Final dry run
+flutter pub publish --dry-run
+
+# If all looks good, publish!
+flutter pub publish
+```
+
+You'll be asked to confirm. Type `y` to proceed. After a local publish, still create the GitHub Release (`gh release create vX.Y.Z --generate-notes`) if Actions did not.
+
+### Step 5: Verify Publication
+
+- Check your package: `https://pub.dev/packages/doc_scanner_sdk`
+- Verify documentation: `https://pub.dev/documentation/doc_scanner_sdk/latest/`
+- Check package score on the pub.dev page
+
+### Common Issues
+
+**Issue**: "Package validation failed"
+- **Fix**: Run `flutter pub publish --dry-run` and address all errors
+
+**Issue**: "Missing example"
+- **Fix**: Ensure `flutter/example/` directory exists with working code
+
+**Issue**: "Documentation score low"
+- **Fix**: Add dartdoc comments to all public APIs
+
+---
+
+## Publishing to iOS Platforms
+
+iOS has two main distribution methods: **CocoaPods** and **Swift Package Manager**.
+
+### Option A: CocoaPods
+
+#### Step 1: Register with CocoaPods Trunk
+
+First-time only:
+
+```bash
+pod trunk register your-email@example.com 'Your Name' --description='MacBook Pro'
+```
+
+Check your email and click the verification link.
+
+Verify registration:
+
+```bash
+pod trunk me
+```
+
+#### Step 2: Update Podspec
+
+Edit `ios/DocScannerSDK.podspec`:
+
+```ruby
+Pod::Spec.new do |s|
+  s.name             = 'DocScannerSDK'
+  s.version          = '2.0.0'  # Update this
+  s.summary          = 'DocScanner SDK for iOS — document scanning and crop rectangle detection'
+  s.description      = <<-DESC
+    Native iOS DocScanner SDK using Vision face landmarks for gaze estimation.
+    Supports real-time document scanning, head pose compensation, and blink detection.
+  DESC
+  s.homepage         = 'https://github.com/Tareq-Ghassan/DocScannerSDK-iOS'
+  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.author           = { 'Your Name' => 'your-email@example.com' }
+  s.source           = {
+    :git => 'https://github.com/Tareq-Ghassan/DocScannerSDK-iOS.git',
+    :tag => s.version.to_s
+  }
+  s.source_files     = 'Sources/DocScannerSDK/**/*.swift'
+  s.ios.deployment_target = '16.0'
+  s.swift_version    = '6.0'
+  s.frameworks       = 'Vision', 'UIKit', 'AVFoundation', 'CoreMedia'
+end
+```
+
+#### Step 3: Validate Podspec
+
+```bash
+cd ios
+pod spec lint DocScannerSDK.podspec --allow-warnings
+```
+
+Fix any errors that appear.
+
+#### Step 4: Create Git Tag
+
+CocoaPods requires a git tag matching the version:
+
+```bash
+cd ios
+git tag 2.0.0
+git push origin 2.0.0
+```
+
+That same push creates the GitHub Release (sidebar **Latest**). A tag alone does not.
+
+#### Step 5: Publish to CocoaPods
+
+```bash
+pod trunk push DocScannerSDK.podspec --allow-warnings
+```
+
+#### Step 6: Verify
+
+```bash
+pod search DocScannerSDK
+```
+
+Your pod should appear in search results.
+
+Users can now install via:
+
+```ruby
+pod 'DocScannerSDK', '~> 2.0'
+```
+
+### Option B: Swift Package Manager (SPM)
+
+SPM uses GitHub releases - no separate publishing step needed!
+
+#### Step 1: Verify Package.swift
+
+Ensure `ios/Package.swift` is properly configured:
+
+```swift
+// swift-tools-version:6.3
+import PackageDescription
+
+let package = Package(
+    name: "DocScannerSDK",
+    platforms: [
+        .iOS(.v16)
+    ],
+    products: [
+        .library(
+            name: "DocScannerSDK",
+            targets: ["DocScannerSDK"]
+        ),
+    ],
+    targets: [
+        .target(
+            name: "DocScannerSDK",
+            path: "Sources/DocScannerSDK"
+        )
+    ]
+)
+```
+
+#### Step 2: Tag (GitHub Release is created by Actions)
+
+```bash
+cd ios
+git tag 2.0.0
+git push origin 2.0.0
+```
+
+Pushing the tag runs `.github/workflows/release.yml`, which publishes the GitHub Release (sidebar **Latest**). A git tag alone does not. Confirm `gh release list --repo Tareq-Ghassan/DocScannerSDK-iOS --limit 1` shows this tag as Latest. If the job failed:
+
+```bash
+gh release create 2.0.0 --repo Tareq-Ghassan/DocScannerSDK-iOS --generate-notes
+```
+
+#### Step 3: Verify
+
+Users can now add to their `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/Tareq-Ghassan/DocScannerSDK-iOS.git", from: "2.0.0")
+]
+```
+
+Or add via Xcode:
+- File → Add Package Dependencies
+- Enter: `https://github.com/Tareq-Ghassan/DocScannerSDK-iOS.git`
+
+---
+
+## Publishing to Android Platforms
+
+Android has two main options: **JitPack** (easiest) and **Maven Central** (more official).
+
+### Option A: JitPack (Recommended for Open Source)
+
+JitPack automatically builds and serves your library from GitHub releases.
+
+#### Step 1: Verify build.gradle
+
+Your `android/docscanner-sdk/build.gradle` already has Maven publishing configured:
+
+```gradle
+publishing {
+    publications {
+        release(MavenPublication) {
+            from components.release
+            groupId = 'com.github.Tareq-Ghassan'
+            artifactId = 'DocScannerSDK-Android'
+            version = android.defaultConfig.versionName
+        }
+    }
+}
+```
+
+#### Step 2: Tag (GitHub Release is created by Actions)
+
+```bash
+cd android
+git tag 2.0.0
+git push origin 2.0.0
+```
+
+Pushing the tag runs `.github/workflows/release.yml`, which publishes the GitHub Release (sidebar **Latest**) and triggers JitPack. A git tag alone does not update the sidebar. Confirm `gh release list --repo Tareq-Ghassan/DocScannerSDK-Android --limit 1` shows this tag as Latest. If the job failed:
+
+```bash
+gh release create 2.0.0 --repo Tareq-Ghassan/DocScannerSDK-Android --generate-notes
+```
+
+#### Step 3: Trigger JitPack Build
+
+Visit: `https://jitpack.io/#Tareq-Ghassan/DocScannerSDK-Android`
+
+Click "Get it" for version 2.0.0. JitPack will build your library.
+
+#### Step 4: Verify
+
+Users can now add to their `build.gradle`:
+
+```gradle
+// Project level build.gradle
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+// App level build.gradle
+dependencies {
+    implementation 'com.github.Tareq-Ghassan:DocScannerSDK-Android:2.0.0'
+}
+```
+
+Check build status: `https://jitpack.io/#Tareq-Ghassan/DocScannerSDK-Android`
+
+### Option B: Maven Central (Production)
+
+Maven Central is more official but requires more setup.
+
+#### Step 1: Create Sonatype Account
+
+1. Go to: `https://issues.sonatype.org/`
+2. Create account
+3. Create a JIRA ticket to claim your groupId (e.g., `io.github.tareq-ghassan`)
+
+#### Step 2: Set up GPG Signing
+
+```bash
+# Generate GPG key
+gpg --gen-key
+
+# List keys
+gpg --list-keys
+
+# Export public key
+gpg --keyserver keyserver.ubuntu.com --send-keys YOUR_KEY_ID
+```
+
+#### Step 3: Configure gradle.properties
+
+Add to `~/.gradle/gradle.properties`:
+
+```properties
+signing.keyId=YOUR_KEY_ID
+signing.password=YOUR_KEY_PASSWORD
+signing.secretKeyRingFile=/path/to/secring.gpg
+
+ossrhUsername=your-sonatype-username
+ossrhPassword=your-sonatype-password
+```
+
+#### Step 4: Update build.gradle
+
+Add to `android/docscanner-sdk/build.gradle`:
+
+```gradle
+plugins {
+    id 'maven-publish'
+    id 'signing'
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'io.github.tareq-ghassan'
+            artifactId = 'docscanner-sdk'
+            version = '2.0.0'
+
+            pom {
+                name = 'DocScanner SDK'
+                description = 'Document scanning and crop rectangle detection for Android'
+                url = 'https://github.com/Tareq-Ghassan/DocScannerSDK-Android'
+                
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                
+                developers {
+                    developer {
+                        id = 'tareq-ghassan'
+                        name = 'Tareq Abu Saleh'
+                        email = 'your-email@example.com'
+                    }
+                }
+                
+                scm {
+                    connection = 'scm:git:git://github.com/Tareq-Ghassan/DocScannerSDK-Android.git'
+                    developerConnection = 'scm:git:ssh://github.com/Tareq-Ghassan/DocScannerSDK-Android.git'
+                    url = 'https://github.com/Tareq-Ghassan/DocScannerSDK-Android'
+                }
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.release
+}
+```
+
+#### Step 5: Publish
+
+```bash
+cd android
+./gradlew publishReleasePublicationToMavenRepository
+```
+
+#### Step 6: Release on Sonatype
+
+1. Login to: `https://s01.oss.sonatype.org/`
+2. Go to "Staging Repositories"
+3. Find your repository
+4. Click "Close" then "Release"
+
+Users can then add:
+
+```gradle
+dependencies {
+    implementation 'io.github.tareq-ghassan:docscanner-sdk:2.0.0'
+}
+```
+
+---
+
+## Version Management
+
+### Semantic Versioning
+
+Follow [semver.org](https://semver.org/):
+
+- **Major** (2.0.0): Breaking API changes
+- **Minor** (2.1.0): New features, backward compatible
+- **Patch** (2.0.1): Bug fixes, backward compatible
+
+### Files to Update
+
+When releasing a new version, update:
+
+1. **Flutter**:
+   - `flutter/pubspec.yaml` → `version:`
+   - `flutter/CHANGELOG.md`
+
+2. **iOS**:
+   - `ios/DocScannerSDK.podspec` → `s.version`
+   - `ios/Package.swift` (version is in git tag)
+
+3. **Android**:
+   - `android/docscanner-sdk/build.gradle` → `versionName`
+   - `android/docscanner-sdk/build.gradle` → `versionCode` (increment)
+
+4. **Main README**:
+   - Update version badges
+   - Update installation instructions
+
+### Synchronize Versions
+
+It's best practice to keep all platform versions synchronized:
+
+```bash
+# Use the same version everywhere
+VERSION="2.0.0"
+
+# Update all at once
+./scripts/bump-version.sh $VERSION  # Create this script
+```
+
+---
+
+## Troubleshooting
+
+### pub.dev Issues
+
+**Error: "Package validation failed"**
+```bash
+# Check detailed errors
+flutter pub publish --dry-run
+```
+
+**Error: "Unauthorized"**
+```bash
+# Re-authenticate
+dart pub logout
+dart pub login
+```
+
+### CocoaPods Issues
+
+**Error: "Unable to find a specification"**
+```bash
+# Update local pods cache
+pod repo update
+```
+
+**Error: "Tag not found"**
+```bash
+# Verify tag exists
+git tag -l
+git push origin 2.0.0
+```
+
+### JitPack Issues
+
+**Build fails on JitPack**
+- Check logs at: `https://jitpack.io/com/github/Tareq-Ghassan/DocScannerSDK-Android/2.2.0/build.log`
+- Tags `2.0.0` and `2.1.0` are JitPack `Error`. Use **2.2.0**.
+- Common fix: Ensure `build.gradle` has correct `maven-publish` configuration
+
+**404 when trying to use library**
+- Trigger build manually: Visit `https://jitpack.io/#Tareq-Ghassan/DocScannerSDK-Android`
+- Click "Get it" button for your version
+
+### General Tips
+
+1. **Always test before publishing**:
+   ```bash
+   # pub.dev
+   flutter pub publish --dry-run
+   
+   # CocoaPods
+   pod spec lint --allow-warnings
+   
+   # Android
+   ./gradlew build
+   ```
+
+2. **Create a pre-release checklist**:
+   - [ ] All tests passing
+   - [ ] Documentation updated
+   - [ ] Version bumped in all files
+   - [ ] CHANGELOG updated
+   - [ ] Example apps working
+
+3. **Tag releases consistently**:
+   ```bash
+   git tag -a 2.0.0 -m "Release version 2.0.0"
+   git push origin 2.0.0
+   ```
+
+4. **Use GitHub Releases** for all platforms:
+   - A git tag is not a Release; the tag workflow must create one (`softprops/action-gh-release`, `contents: write`)
+   - Sidebar **Latest** must match the tag you just pushed
+   - If Actions failed: `gh release create <tag> --generate-notes`
+
+---
+
+## Quick Reference
+
+### Publish Checklist
+
+- [ ] Run all tests
+- [ ] Update version numbers
+- [ ] Update CHANGELOG
+- [ ] Create git tag
+- [ ] Push to GitHub
+- [ ] Confirm GitHub Release exists (sidebar **Latest** == tag)
+- [ ] Publish to pub.dev (Flutter tag workflow)
+- [ ] Publish to CocoaPods
+- [ ] Verify JitPack / SPM / pub.dev
+- [ ] Announce release
+
+### Installation Commands
+
+**Flutter:**
+```yaml
+dependencies:
+  doc_scanner_sdk: ^3.0.4
+```
+
+**iOS CocoaPods:**
+```ruby
+pod 'DocScannerSDK', :git => 'https://github.com/Tareq-Ghassan/DocScannerSDK-iOS.git', :tag => '2.2.1'
+```
+
+**iOS SPM:**
+```swift
+.package(url: "https://github.com/Tareq-Ghassan/DocScannerSDK-iOS.git", from: "2.2.1")
+```
+
+**Android JitPack:**
+```gradle
+implementation 'com.github.Tareq-Ghassan:DocScannerSDK-Android:2.2.0'
+```
+
+---
+
+## Additional Resources
+
+- [pub.dev Publishing Guide](https://dart.dev/tools/pub/publishing)
+- [CocoaPods Trunk Guide](https://guides.cocoapods.org/making/getting-setup-with-trunk.html)
+- [Swift Package Manager Guide](https://developer.apple.com/documentation/xcode/creating_a_standalone_swift_package_with_xcode)
+- [JitPack Documentation](https://jitpack.io/docs/)
+- [Maven Central Guide](https://central.sonatype.org/publish/publish-guide/)
+
+---
+
+**Last Updated**: August 13, 2026

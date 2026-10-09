@@ -1,4 +1,4 @@
-# DocumentScanner SDK
+# DocScanner SDK
 
 <div align="center">
 
@@ -7,9 +7,9 @@
 [![Platform](https://img.shields.io/badge/platform-android%20%7C%20ios%20%7C%20web%20%7C%20windows%20%7C%20macos%20%7C%20linux-blue)](https://github.com/Tareq-Ghassan/DocumentScanner-SDK)
 [![pub package](https://img.shields.io/pub/v/doc_scanner_sdk.svg)](https://pub.dev/packages/doc_scanner_sdk)
 
-**Universal Document Scanning with Fixed Crop Area Overlay**
+**Universal Document Capture with Fixed Crop Overlay**
 
-*Cross-platform document capture for ID cards, passports, and OCR*
+*White rectangle crop-on-capture across all major platforms with native performance*
 
 [Features](#-features) •
 [Platforms](#-platform-support) •
@@ -22,73 +22,68 @@
 
 ---
 
-## 🌟 What is DocumentScanner SDK?
+## What is DocScanner SDK?
 
-DocumentScanner SDK is a comprehensive, **universal document scanning solution** that works seamlessly across Android, iOS, Web, Windows, macOS, and Linux. It provides a camera preview with a fixed crop area overlay, perfect for capturing documents that need precise alignment for OCR processing.
+DocScanner SDK is a **native-first document capture solution** for Android, iOS, Web, Windows, macOS, and Linux. Each platform owns the camera preview, the **white crop rectangle overlay**, and the crop-on-capture logic. Flutter is a thin wrapper that calls those native APIs.
 
-### Use Cases
+Use it to:
 
-- 📇 **ID Card Scanning** - Capture national IDs, driver's licenses
-- 🛂 **Passport Scanning** - Scan passport MRZ zones
-- 💳 **Credit Card Capture** - Card number recognition
-- 📄 **Document Digitization** - Business cards, receipts, forms
-- 🔍 **OCR Input** - Provide properly aligned images for text recognition
-- 🏦 **KYC Verification** - Know Your Customer document capture
+- Capture ID cards, passports, and documents inside a fixed frame
+- Crop the image to the white rectangle when the user taps capture
+- Feed OCR / KYC pipelines with consistently framed photos
+- Ship one UX pattern across mobile, desktop, and web
 
-### How It Works
+### How crop-on-capture works
 
-1. **Camera Preview** - Opens device camera with real-time preview
-2. **Fixed Overlay** - Displays a bordered rectangle in the center
-3. **User Alignment** - User positions document within the overlay
-4. **Capture** - Tap button to capture photo
-5. **Auto Crop** - SDK automatically crops to overlay bounds
-6. **Return Image** - Provides cropped image path/blob to your app
-
-<img src="docs/demo.png" alt="Document Scanner Demo" width="300"/>
+1. **Live camera preview** is shown by the native SDK
+2. A **white rectangle overlay** is drawn on top (native UI — not Flutter)
+3. The user aligns the document inside the frame
+4. On **capture**, the native SDK crops the bitmap/pixel buffer to that rectangle
+5. The cropped image path (or bytes) is returned to the host app / Flutter plugin
 
 ---
 
-## ✨ Features
+## Features
 
-### Core Capabilities
+- White crop rectangle overlay (color, stroke, radius, margins configurable)
+- Crop-on-capture aligned to the visible overlay
+- Front / back / single-side scan flows
+- Opt-in live preview via PlatformViews (Flutter) or native preview views
+- Camera permission helpers
+- Flash / autofocus where the platform supports them
+- Independent per-platform releases (same model as FaceDetection-GazePoint)
 
-- 📷 **Camera Preview** - Real-time camera feed with overlay
-- ⬜ **Fixed Crop Area** - White bordered rectangle overlay
-- 📸 **Auto Crop** - Pixel-perfect cropping to overlay bounds
-- 🔄 **Front/Back Support** - Capture both sides of documents
-- 🎯 **High Accuracy** - Precise alignment for OCR
-- 💾 **File Management** - Automatic saving and cleanup
-- 📐 **Orientation Support** - Handles device rotation
-- 🎨 **Customizable** - Configure colors, sizes, camera settings
+### Platform technologies
 
-### Platform-Specific Technologies
-
-- **Android** - CameraX API with SurfaceView
-- **iOS** - AVFoundation with CALayer overlay
-- **Web** - MediaDevices API with Canvas
-- **Windows** - Media Foundation (in development)
-- **macOS** - AVFoundation with AppKit
-- **Linux** - V4L2 with OpenCV (in development)
-
----
-
-## 📱 Platform Support
-
-| Platform | Min Version | Status | Package |
-|----------|-------------|--------|---------|
-| 🤖 **Android** | API 24+ (7.0) | ✅ Stable | [JitPack](https://jitpack.io/#Tareq-Ghassan/DocScannerSDK-Android) |
-| 🍎 **iOS** | 16.0+ | ✅ Stable | [SPM](https://github.com/Tareq-Ghassan/DocScannerSDK-iOS) / [CocoaPods](https://cocoapods.org) |
-| 🌐 **Web** | Modern Browsers | ✅ Stable | [NPM](https://www.npmjs.com/package/@docscanner/sdk-web) |
-| 🪟 **Windows** | 10 1903+ | 🚧 Dev | [NuGet](https://www.nuget.org/) |
-| 🖥️ **macOS** | 13.0+ | ✅ Stable | [SPM](https://github.com/Tareq-Ghassan/DocScannerSDK-macOS) |
-| 🐧 **Linux** | Ubuntu 20.04+ | 🚧 Dev | Source |
-| 🎯 **Flutter** | 3.38.4+ | ✅ Stable | [pub.dev](https://pub.dev/packages/doc_scanner_sdk) |
+| Platform | Stack |
+|----------|--------|
+| Android | Kotlin, CameraX, ImageCapture |
+| iOS | Swift, AVFoundation, Vision |
+| Web | TypeScript, MediaDevices, Canvas |
+| Windows | C#, .NET 6+, Windows Media Capture |
+| macOS | Swift, AVFoundation |
+| Linux | C++, OpenCV, Video4Linux2 |
+| Flutter | Dart wrapper → MethodChannel / PlatformView → native SDKs |
 
 ---
 
-## 🚀 Quick Start
+## Platform Support
 
-### Flutter (Recommended for Cross-Platform)
+| Platform | Min Version | Package | Status |
+|----------|-------------|---------|--------|
+| Android | API 24+ | [JitPack](https://jitpack.io/#Tareq-Ghassan/DocScannerSDK-Android) | Stable |
+| iOS | 16.0+ | [SPM](https://github.com/Tareq-Ghassan/DocScannerSDK-iOS) / CocoaPods | Stable |
+| Web | Modern browsers | [NPM](https://www.npmjs.com/) `@docscanner/sdk-web` | Stable |
+| Windows | 10 (1903+) | NuGet `DocScanner.SDK.Windows` | Stable |
+| macOS | 13.0+ | [SPM](https://github.com/Tareq-Ghassan/DocScannerSDK-macOS) | Stable |
+| Linux | Ubuntu 20.04+ | Source | Stable |
+| Flutter | 3.38.4+ | [pub.dev](https://pub.dev/packages/doc_scanner_sdk) | Stable |
+
+---
+
+## Quick Start
+
+### Flutter (recommended cross-platform)
 
 ```yaml
 dependencies:
@@ -98,298 +93,117 @@ dependencies:
 ```dart
 import 'package:doc_scanner_sdk/doc_scanner_sdk.dart';
 
-final scanner = DocScannerSdk.instance;
+final scanner = DocScanner();
+await scanner.initialize(
+  options: ScanOptions(previewEnabled: true, showCropOverlay: true),
+);
 
-// Request permission
 if (await scanner.requestCameraPermission()) {
-  // Scan document
   final result = await scanner.scanDocument();
-  
-  if (result.isSuccess && result.frontImagePath != null) {
-    // Use the cropped image
-    final image = File(result.frontImagePath!);
-  }
+  print(result.frontImagePath);
 }
 ```
 
-👉 **[Full Flutter Documentation →](flutter/README.md)**
+Full docs: [flutter/README.md](flutter/README.md)
 
-### Native Platforms
-
-Each platform has its own native SDK:
-
-- 🤖 **Android** `1.0.0` — [DocScannerSDK-Android](https://github.com/Tareq-Ghassan/DocScannerSDK-Android)
-- 🍎 **iOS** `1.0.0` — [DocScannerSDK-iOS](https://github.com/Tareq-Ghassan/DocScannerSDK-iOS)
-- 🌐 **Web** `1.0.0` — [DocScannerSDK-Web](https://github.com/Tareq-Ghassan/DocScannerSDK-Web)
-- 🖥️ **macOS** `1.0.0` — [DocScannerSDK-macOS](https://github.com/Tareq-Ghassan/DocScannerSDK-macOS)
-
----
-
-## 📚 Examples
-
-### Flutter Example
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:doc_scanner_sdk/doc_scanner_sdk.dart';
-import 'dart:io';
-
-class ScannerPage extends StatefulWidget {
-  @override
-  _ScannerPageState createState() => _ScannerPageState();
-}
-
-class _ScannerPageState extends State<ScannerPage> {
-  File? _frontImage;
-  File? _backImage;
-
-  Future<void> _scanBothSides() async {
-    final scanner = DocScannerSdk.instance;
-    
-    if (!await scanner.hasCameraPermission()) {
-      final granted = await scanner.requestCameraPermission();
-      if (!granted) return;
-    }
-
-    try {
-      final result = await scanner.scanBothSides();
-      
-      if (result.isSuccess) {
-        setState(() {
-          if (result.frontImagePath != null) {
-            _frontImage = File(result.frontImagePath!);
-          }
-          if (result.backImagePath != null) {
-            _backImage = File(result.backImagePath!);
-          }
-        });
-      }
-    } catch (e) {
-      print('Scan error: $e');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Document Scanner')),
-      body: Column(
-        children: [
-          if (_frontImage != null)
-            Image.file(_frontImage!, height: 200),
-          if (_backImage != null)
-            Image.file(_backImage!, height: 200),
-          ElevatedButton(
-            onPressed: _scanBothSides,
-            child: Text('Scan Document'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-```
-
-### Android Example
+### Native Android
 
 ```kotlin
-import com.docscanner.sdk.DocScannerActivity
-
-// Launch scanner
-val intent = Intent(this, DocScannerActivity::class.java)
-startActivityForResult(intent, REQUEST_CODE_SCAN)
-
-// Handle result
-override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    if (requestCode == REQUEST_CODE_SCAN && resultCode == Activity.RESULT_OK) {
-        val frontPath = data?.getStringExtra("FRONT_IMAGE_PATH")
-        val backPath = data?.getStringExtra("BACK_IMAGE_PATH")
-        
-        frontPath?.let { path ->
-            val bitmap = BitmapFactory.decodeFile(path)
-            // Use bitmap
-        }
-    }
-}
+implementation 'com.github.Tareq-Ghassan:DocScannerSDK-Android:1.0.0'
 ```
 
-### iOS Example
+```kotlin
+val intent = DocScannerActivity.createIntent(
+    context,
+    ScanOptions(showCropOverlay = true, scanBothSides = false)
+)
+startActivityForResult(intent, REQ)
+```
+
+### Native iOS
 
 ```swift
-import DocScannerSDK
-
-let scanner = DocScanner.shared
-
-Task {
-    guard await scanner.requestCameraPermission() else {
-        print("Permission denied")
-        return
-    }
-    
-    do {
-        let result = try await scanner.scanBothSides()
-        
-        if result.isSuccess,
-           let frontPath = result.frontImagePath,
-           let backPath = result.backImagePath {
-            let frontImage = UIImage(contentsOfFile: frontPath)
-            let backImage = UIImage(contentsOfFile: backPath)
-            // Use images
-        }
-    } catch {
-        print("Scan failed: \(error)")
-    }
-}
+.package(url: "https://github.com/Tareq-Ghassan/DocScannerSDK-iOS.git", from: "1.0.0")
 ```
 
-### Web Example
-
-```typescript
-import { DocScanner } from '@docscanner/sdk-web';
-
-const scanner = DocScanner.getInstance();
-
-async function scanDocument() {
-  if (!await scanner.hasCameraPermission()) {
-    const granted = await scanner.requestCameraPermission();
-    if (!granted) return;
-  }
-
-  try {
-    const result = await scanner.scanDocument();
-    
-    if (result.isSuccess && result.frontImageBlob) {
-      const imageUrl = URL.createObjectURL(result.frontImageBlob);
-      document.getElementById('preview').src = imageUrl;
-    }
-  } catch (error) {
-    console.error('Scan failed:', error);
-  }
-}
+```swift
+let camera = DocScannerCamera()
+camera.configure(DocScannerOptions(showCropOverlay: true))
+// Present camera.previewView; call camera.capture() → cropped UIImage
 ```
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
-DocumentScanner SDK uses **one GitHub repository per platform**. This umbrella repository contains submodules pointing to each platform SDK.
+**Native-first.** Flutter does **not** reimplement camera, overlay, or crop math.
 
 ```
-DocumentScanner-SDK/               # Umbrella repo (this repo)
+Flutter App
+   └── doc_scanner_sdk (MethodChannel + PlatformView)
+          ├── Android → DocScannerSDK-Android (JitPack)
+          ├── iOS     → source snapshot of DocScannerSDK-iOS
+          ├── macOS   → source snapshot of DocScannerSDK-macOS
+          ├── Web     → Dart MediaDevices + canvas crop
+          └── Windows / Linux → native SDKs (stubs → full ports)
+```
+
+Repository layout (git submodules), matching [FaceDetection-GazePoint](https://github.com/Tareq-Ghassan/FaceDetection-GazePoint):
+
+```
+DocumentScanner-SDK/
 ├── android/   → DocScannerSDK-Android
 ├── ios/       → DocScannerSDK-iOS
 ├── flutter/   → DocScannerSDK-Flutter
 ├── web/       → DocScannerSDK-Web
 ├── windows/   → DocScannerSDK-Windows
 ├── macos/     → DocScannerSDK-macOS
-└── linux/     → DocScannerSDK-Linux
+├── linux/     → DocScannerSDK-Linux
+├── .agents/   .cursor/rules/   .github/
+├── EXAMPLES.md  TESTING.md  PUBLISHING_GUIDE.md
+└── check-pana-score.sh
 ```
 
-Each platform SDK is independently versioned and published to its respective package manager.
-
-**Learn More**: [Architecture Documentation](.agents/MULTI_PLATFORM_ARCHITECTURE.md)
+See [.agents/MULTI_PLATFORM_ARCHITECTURE.md](.agents/MULTI_PLATFORM_ARCHITECTURE.md) and [.agents/WORKFLOW_RULES.md](.agents/WORKFLOW_RULES.md).
 
 ---
 
-## 📖 Documentation
+## Examples
 
-### Getting Started
+| SDK | Example |
+|-----|---------|
+| Android | [android/example](android/example) |
+| iOS | [ios/Example](ios/Example) |
+| Flutter | [flutter/example](flutter/example) |
+| Web | [web/example](web/example) |
+| Windows | [windows/example](windows/example) |
+| macOS | [macos/example](macos/example) |
+| Linux | [linux/example](linux/example) |
 
-- 📦 **Installation** - Platform-specific setup guides in each SDK repository
-- 🎯 **Quick Start** - See examples above
-- 🔧 **API Reference** - Full API documentation in each platform's README
-
-### Advanced Topics
-
-- 🎨 **Customization** - Configure overlay colors, sizes, camera settings
-- 📊 **Best Practices** - Tips for optimal scanning
-- 🐛 **Troubleshooting** - Common issues and solutions
-- 🔌 **Platform Integration** - Platform-specific integration guides
-
-### For Contributors
-
-- 🛠️ **[Creating Repositories](.agents/CREATE_REPOS.md)** - How to set up platform repos
-- 📝 **[Workflow Rules](.agents/WORKFLOW_RULES.md)** - Development workflow and conventions
-- 🤖 **[Architecture](.agents/MULTI_PLATFORM_ARCHITECTURE.md)** - System architecture
+More: [EXAMPLES.md](EXAMPLES.md)
 
 ---
 
-## 📊 Performance
+## Documentation
 
-Expected performance across platforms:
-
-| Metric | Target | Notes |
-|--------|--------|-------|
-| **Capture Time** | < 1s | Time from tap to cropped image |
-| **Accuracy** | 99%+ | Pixel-perfect cropping |
-| **File Size** | 200-500 KB | JPEG compressed (quality 95) |
-| **Memory Usage** | 50-100 MB | Varies by platform |
+- [EXAMPLES.md](EXAMPLES.md) — per-platform sample apps
+- [TESTING.md](TESTING.md) — native vs Flutter test matrix
+- [PUBLISHING_GUIDE.md](PUBLISHING_GUIDE.md) — tags, releases, pub.dev / JitPack / SPM
+- [check-pana-score.sh](check-pana-score.sh) — local pana 160/160 before pub.dev
+- [.agents/](.agents/) — agent workflow, releases, submodules, pana
 
 ---
 
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-1. 🐛 **Report Bugs** - [Open an issue](https://github.com/Tareq-Ghassan/DocumentScanner-SDK/issues)
-2. 💡 **Suggest Features** - Share your ideas
-3. 📝 **Improve Documentation** - Help make docs clearer
-4. 🔧 **Submit Pull Requests** - Fix bugs or add features
-
-### Development Setup
+## Clone
 
 ```bash
-# Clone with submodules
-git clone --recurse-submodules https://github.com/Tareq-Ghassan/DocumentScanner-SDK.git
-
-# Or if already cloned
+git clone --recursive https://github.com/Tareq-Ghassan/DocumentScanner-SDK.git
 cd DocumentScanner-SDK
-git submodule update --init --recursive
+git submodule update --init --remote
 ```
 
-**Contributing Guide**: [WORKFLOW_RULES.md](.agents/WORKFLOW_RULES.md)
-
 ---
 
-## 📝 License
+## License
 
-MIT License - Copyright (c) 2024-2026 Tareq Abu Saleh
-
-See [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Google** - Android CameraX API
-- **Apple** - iOS AVFoundation and Vision frameworks
-- **WebRTC** - MediaDevices API for web
-- **OpenCV** - Computer vision for Linux
-- **Flutter** - Amazing cross-platform framework
-- All **contributors** who have helped improve this project
-
----
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/Tareq-Ghassan/DocumentScanner-SDK/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Tareq-Ghassan/DocumentScanner-SDK/discussions)
-- **Flutter Package**: [pub.dev/packages/doc_scanner_sdk](https://pub.dev/packages/doc_scanner_sdk)
-
----
-
-## 🌟 Star History
-
-If you find this project useful, please consider giving it a star ⭐
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Tareq-Ghassan/DocumentScanner-SDK&type=Date)](https://star-history.com/#Tareq-Ghassan/DocumentScanner-SDK&Date)
-
----
-
-<div align="center">
-
-**Made with ❤️ by [Tareq Ghassan](https://github.com/Tareq-Ghassan)**
-
-[⬆ Back to Top](#documentscanner-sdk)
-
-</div>
+MIT © Tareq Abu Saleh — see [LICENSE](LICENSE)
