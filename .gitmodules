@@ -1,0 +1,28 @@
+[submodule "android"]
+	path = android
+	url = https://github.com/Tareq-Ghassan/DocScannerSDK-Android.git
+	branch = main
+[submodule "ios"]
+	path = ios
+	url = https://github.com/Tareq-Ghassan/DocScannerSDK-iOS.git
+	branch = main
+[submodule "flutter"]
+	path = flutter
+	url = https://github.com/Tareq-Ghassan/DocScannerSDK-Flutter.git
+	branch = main
+[submodule "web"]
+	path = web
+	url = https://github.com/Tareq-Ghassan/DocScannerSDK-Web.git
+	branch = main
+[submodule "windows"]
+	path = windows
+	url = https://github.com/Tareq-Ghassan/DocScannerSDK-Windows.git
+	branch = main
+[submodule "macos"]
+	path = macos
+	url = https://github.com/Tareq-Ghassan/DocScannerSDK-macOS.git
+	branch = main
+[submodule "linux"]
+	path = linux
+	url = https://github.com/Tareq-Ghassan/DocScannerSDK-Linux.git
+	branch = main

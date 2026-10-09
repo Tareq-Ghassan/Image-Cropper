@@ -1,0 +1,88 @@
+# Publish doc_scanner_sdk when this umbrella repo is tagged.
+#
+# Native SDKs are NOT tagged from here. Release Android/iOS/Web/etc. by
+# tagging that SDK's own GitHub repository.
+#
+# Flutter can also be published from DocScannerSDK-Flutter directly
+# (see flutter/.github/workflows/publish.yml). This workflow remains so
+# existing pub.dev OIDC (repository DocumentScanner-SDK) keeps working.
+#
+#   git tag v3.0.3 && git push origin v3.0.3
+# Also creates the GitHub Release (sidebar Latest). A tag alone does not.
+
+name: Publish Flutter plugin
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  github-release:
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+
+  publish-flutter:
+    name: Publish Flutter → pub.dev
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: dart-lang/setup-dart@v1
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Require flutter/pubspec.yaml version == tag
+        working-directory: flutter
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PUBSPEC="$(ruby -ryaml -e "puts YAML.load_file('pubspec.yaml')['version']")"
+          echo "pubspec=$PUBSPEC tag=$TAG"
+          test "$PUBSPEC" = "$TAG"
+
+      - name: Pub get
+        working-directory: flutter
+        run: flutter pub get
+
+      - name: Format check
+        working-directory: flutter
+        run: dart format --output=none --set-exit-if-changed lib
+
+      - name: Pana
+        working-directory: flutter
+        run: |
+          dart pub global activate pana
+          pana --no-warning --exit-code-threshold 160
+
+      - name: Restore tree after Pana
+        working-directory: flutter
+        run: git restore --worktree --source=HEAD -- .
+
+      - name: Dry-run
+        working-directory: flutter
+        run: dart pub publish --dry-run
+
+      - name: Publish
+        working-directory: flutter
+        run: dart pub publish --force

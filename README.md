@@ -1,95 +1,209 @@
+# DocScanner SDK
 
-# Image Cropper App
+<div align="center">
 
-This project is an Android application that allows users to capture an image and crop it based on white lines drawn on the screen. The app is structured using the MVVM (Model-View-ViewModel) architecture to ensure a clean separation of concerns and ease of maintainability.
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Platform](https://img.shields.io/badge/platform-android%20%7C%20ios%20%7C%20web%20%7C%20windows%20%7C%20macos%20%7C%20linux-blue)](https://github.com/Tareq-Ghassan/DocumentScanner-SDK)
+[![pub package](https://img.shields.io/pub/v/doc_scanner_sdk.svg)](https://pub.dev/packages/doc_scanner_sdk)
+
+**Universal Document Capture with Fixed Crop Overlay**
+
+*White rectangle crop-on-capture across all major platforms with native performance*
+
+[Features](#-features) •
+[Platforms](#-platform-support) •
+[Quick Start](#-quick-start) •
+[Examples](#-examples) •
+[Documentation](#-documentation) •
+[Architecture](#-architecture)
+
+</div>
+
+---
+
+## What is DocScanner SDK?
+
+DocScanner SDK is a **native-first document capture solution** for Android, iOS, Web, Windows, macOS, and Linux. Each platform owns the camera preview, the **white crop rectangle overlay**, and the crop-on-capture logic. Flutter is a thin wrapper that calls those native APIs.
+
+Use it to:
+
+- Capture ID cards, passports, and documents inside a fixed frame
+- Crop the image to the white rectangle when the user taps capture
+- Feed OCR / KYC pipelines with consistently framed photos
+- Ship one UX pattern across mobile, desktop, and web
+
+### How crop-on-capture works
+
+1. **Live camera preview** is shown by the native SDK
+2. A **white rectangle overlay** is drawn on top (native UI — not Flutter)
+3. The user aligns the document inside the frame
+4. On **capture**, the native SDK crops the bitmap/pixel buffer to that rectangle
+5. The cropped image path (or bytes) is returned to the host app / Flutter plugin
+
+---
 
 ## Features
 
-- Capture images using the device camera
-- Draw white lines on the captured image to define the crop area
-- Crop the image based on the drawn lines
-- MVVM architecture for better code management and scalability
+- White crop rectangle overlay (color, stroke, radius, margins configurable)
+- Crop-on-capture aligned to the visible overlay
+- Front / back / single-side scan flows
+- Opt-in live preview via PlatformViews (Flutter) or native preview views
+- Camera permission helpers
+- Flash / autofocus where the platform supports them
+- Independent per-platform releases (same model as FaceDetection-GazePoint)
 
-## Getting Started
+### Platform technologies
 
-### Prerequisites
+| Platform | Stack |
+|----------|--------|
+| Android | Kotlin, CameraX, ImageCapture |
+| iOS | Swift, AVFoundation, Vision |
+| Web | TypeScript, MediaDevices, Canvas |
+| Windows | C#, .NET 6+, Windows Media Capture |
+| macOS | Swift, AVFoundation |
+| Linux | C++, OpenCV, Video4Linux2 |
+| Flutter | Dart wrapper → MethodChannel / PlatformView → native SDKs |
 
-- Android Studio 4.0 or later
-- Android SDK
-- A physical Android device or emulator running Android 5.0 (Lollipop) or higher
+---
 
-### Installation
+## Platform Support
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/Tareq-Ghassan/image-cropper-app.git
-   ```
+| Platform | Min Version | Package | Status |
+|----------|-------------|---------|--------|
+| Android | API 24+ | [JitPack](https://jitpack.io/#Tareq-Ghassan/DocScannerSDK-Android) | Stable |
+| iOS | 16.0+ | [SPM](https://github.com/Tareq-Ghassan/DocScannerSDK-iOS) / CocoaPods | Stable |
+| Web | Modern browsers | [NPM](https://www.npmjs.com/) `@docscanner/sdk-web` | Stable |
+| Windows | 10 (1903+) | NuGet `DocScanner.SDK.Windows` | Stable |
+| macOS | 13.0+ | [SPM](https://github.com/Tareq-Ghassan/DocScannerSDK-macOS) | Stable |
+| Linux | Ubuntu 20.04+ | Source | Stable |
+| Flutter | 3.38.4+ | [pub.dev](https://pub.dev/packages/doc_scanner_sdk) | Stable |
 
-2. Open the project in Android Studio:
-   - Go to `File > Open` and select the project directory.
+---
 
-3. Sync the project with Gradle files:
-   - Click on the `Sync Project with Gradle Files` button in the toolbar.
+## Quick Start
 
-### Running the App
+### Flutter (recommended cross-platform)
 
-1. Connect your Android device or start an emulator.
-2. Build and run the app:
-   - Click the `Run` button in the toolbar or select `Run > Run 'app'`.
+```yaml
+dependencies:
+  doc_scanner_sdk: ^1.0.0
+```
 
-### Permissions
+```dart
+import 'package:doc_scanner_sdk/doc_scanner_sdk.dart';
 
-The app requires the following permissions to function correctly:
+final scanner = DocScanner();
+await scanner.initialize(
+  options: ScanOptions(previewEnabled: true, showCropOverlay: true),
+);
 
-- Camera: To capture images
-- Write External Storage: To save captured images
-- Read External Storage: To access saved images
+if (await scanner.requestCameraPermission()) {
+  final result = await scanner.scanDocument();
+  print(result.frontImagePath);
+}
+```
 
-These permissions are requested at runtime as per Android's permission model.
+Full docs: [flutter/README.md](flutter/README.md)
 
-### Handling Permissions
+### Native Android
 
-The app checks and requests the necessary permissions at runtime. If permissions are not granted, the app will display a message and close.
+```kotlin
+implementation 'com.github.Tareq-Ghassan:DocScannerSDK-Android:1.0.0'
+```
 
-### Architecture
+```kotlin
+val intent = DocScannerActivity.createIntent(
+    context,
+    ScanOptions(showCropOverlay = true, scanBothSides = false)
+)
+startActivityForResult(intent, REQ)
+```
 
-The app follows the MVVM architecture pattern:
+### Native iOS
 
-- **Model**: Handles the data and business logic.
-- **View**: UI components (Activities and Fragments).
-- **ViewModel**: Manages the UI-related data in a lifecycle-conscious way.
+```swift
+.package(url: "https://github.com/Tareq-Ghassan/DocScannerSDK-iOS.git", from: "1.0.0")
+```
 
-### Code Overview
+```swift
+let camera = DocScannerCamera()
+camera.configure(DocScannerOptions(showCropOverlay: true))
+// Present camera.previewView; call camera.capture() → cropped UIImage
+```
 
-#### MainActivityLib.java
+---
 
-The main activity that serves as the entry point of the app. It manages navigation between fragments and requests necessary permissions at runtime.
+## Architecture
 
-#### IdFragment.kt
+**Native-first.** Flutter does **not** reimplement camera, overlay, or crop math.
 
-A Fragment class that handles the image capture and cropping functionality. It interacts with the `IdViewModel` to manage UI-related data and logic.
+```
+Flutter App
+   └── doc_scanner_sdk (MethodChannel + PlatformView)
+          ├── Android → DocScannerSDK-Android (JitPack)
+          ├── iOS     → source snapshot of DocScannerSDK-iOS
+          ├── macOS   → source snapshot of DocScannerSDK-macOS
+          ├── Web     → Dart MediaDevices + canvas crop
+          └── Windows / Linux → native SDKs (stubs → full ports)
+```
 
-#### IdViewModel.kt
+Repository layout (git submodules), matching [FaceDetection-GazePoint](https://github.com/Tareq-Ghassan/FaceDetection-GazePoint):
 
-A ViewModel class that manages the data and logic for the `IdFragment`. It uses LiveData to observe changes in the data and update the UI accordingly.
+```
+DocumentScanner-SDK/
+├── android/   → DocScannerSDK-Android
+├── ios/       → DocScannerSDK-iOS
+├── flutter/   → DocScannerSDK-Flutter
+├── web/       → DocScannerSDK-Web
+├── windows/   → DocScannerSDK-Windows
+├── macos/     → DocScannerSDK-macOS
+├── linux/     → DocScannerSDK-Linux
+├── .agents/   .cursor/rules/   .github/
+├── EXAMPLES.md  TESTING.md  PUBLISHING_GUIDE.md
+└── check-pana-score.sh
+```
 
-#### PhotoFragment.java
+See [.agents/MULTI_PLATFORM_ARCHITECTURE.md](.agents/MULTI_PLATFORM_ARCHITECTURE.md) and [.agents/WORKFLOW_RULES.md](.agents/WORKFLOW_RULES.md).
 
-A Fragment class that handles photo-related logic. It interacts with the `PhotoViewModel` to manage UI-related data and logic.
+---
 
-#### PhotoViewModel.java
+## Examples
 
-A ViewModel class for the `PhotoFragment`. It manages the photo data and cropping logic.
+| SDK | Example |
+|-----|---------|
+| Android | [android/example](android/example) |
+| iOS | [ios/Example](ios/Example) |
+| Flutter | [flutter/example](flutter/example) |
+| Web | [web/example](web/example) |
+| Windows | [windows/example](windows/example) |
+| macOS | [macos/example](macos/example) |
+| Linux | [linux/example](linux/example) |
 
-## Contributing
+More: [EXAMPLES.md](EXAMPLES.md)
 
-Contributions are welcome! Please fork the repository and use a feature branch. Pull requests are warmly welcome.
+---
+
+## Documentation
+
+- [EXAMPLES.md](EXAMPLES.md) — per-platform sample apps
+- [TESTING.md](TESTING.md) — native vs Flutter test matrix
+- [PUBLISHING_GUIDE.md](PUBLISHING_GUIDE.md) — tags, releases, pub.dev / JitPack / SPM
+- [check-pana-score.sh](check-pana-score.sh) — local pana 160/160 before pub.dev
+- [.agents/](.agents/) — agent workflow, releases, submodules, pana
+
+---
+
+## Clone
+
+```bash
+git clone --recursive https://github.com/Tareq-Ghassan/DocumentScanner-SDK.git
+cd DocumentScanner-SDK
+git submodule update --init --remote
+```
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [Android Developers](https://developer.android.com/) for documentation and tutorials
-- [Stack Overflow](https://stackoverflow.com/) for troubleshooting and code examples
+MIT © Tareq Abu Saleh — see [LICENSE](LICENSE)
